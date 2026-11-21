@@ -108,6 +108,38 @@
       .user-chip{max-width:48%;overflow:hidden}
     }
     @media(max-width:380px){.grid{grid-template-columns:1fr 1fr}.stat-value{font-size:17px}}
+
+    .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+    .panel{padding:20px;margin-bottom:16px}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .control{display:flex;flex-direction:column;gap:6px}
+    .control.fullrow{grid-column:1/-1}
+    .control label{font-size:12px;color:#d8d0e8}
+    .control input,.control select,.control textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#ffffff0b;color:#fff;outline:none;min-width:0}
+    .control select option{background:#211a31;color:white}
+    .control textarea{min-height:76px;resize:vertical}
+    .form-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+    table{width:100%;border-collapse:collapse;min-width:650px;font-size:12px}
+    th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+    th{color:#c7b9e7;background:#ffffff08;font-weight:600}
+    tr:last-child td{border-bottom:0}
+    .pill{display:inline-block;padding:4px 9px;border-radius:30px;background:#a78bfa20;color:#d8caff;font-size:11px}
+    .empty{padding:22px;text-align:center;color:var(--muted);font-size:13px}
+    .alert{padding:12px 14px;border-radius:12px;font-size:12px;line-height:1.9;margin:10px 0}
+    .alert.ok{background:#65d6a014;border:1px solid #65d6a033;color:#9de9c2}
+    .alert.bad{background:#ff7d9114;border:1px solid #ff7d9133;color:#ffabb8}
+    .alert.info{background:#a78bfa12;border:1px solid #a78bfa30;color:#d8caff}
+    .metric-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .metric{padding:15px;border:1px solid var(--line);border-radius:14px;background:#ffffff06}
+    .metric small{color:var(--muted);display:block}
+    .metric b{display:block;margin-top:8px;font-size:18px}
+    .danger{color:#ffabb8}
+    .btn-sm{padding:8px 12px;font-size:12px}
+    .inline-note{color:var(--muted);font-size:11px;line-height:1.8}
+    .loading{padding:20px;color:var(--muted);text-align:center}
+    @media(max-width:650px){.form-grid,.metric-row{grid-template-columns:1fr}.panel{padding:15px}}
+
   </style>
 </head>
 <body>
@@ -156,7 +188,8 @@
 
       <div class="nav-label">امور مالی شخصی</div>
       <button class="nav-btn" data-page="finance"><span class="nav-icon">◉</span>MY FINANCE</button>
-      <button class="nav-btn" data-page="accounts"><span class="nav-icon">▣</span>حساب‌ها و تراکنش‌ها</button>
+      <button class="nav-btn" data-page="accounts"><span class="nav-icon">▣</span>مدیریت حساب‌ها</button>
+       <button class="nav-btn" data-page="transactions"><span class="nav-icon">↔</span>ثبت تراکنش مالی</button>
       <button class="nav-btn" data-page="installments"><span class="nav-icon">▦</span>اقساط و بدهی‌ها</button>
       <button class="nav-btn" data-page="receivables"><span class="nav-icon">⇢</span>طلب از دیگران</button>
 
@@ -181,281 +214,81 @@
         <div class="user-chip"><div class="avatar">M</div><span id="userEmail">کاربر</span></div>
       </header>
 
-      <div id="pageContent">
-        <section class="welcome glass">
-          <h3>خوش اومدی 👋</h3>
-          <p>اینجا می‌تونی حقوق، ساعت کاری و وضعیت مالی خودت رو یک‌جا مدیریت کنی.</p>
-        </section>
-
-        <section class="grid">
-          <div class="stat glass">
-            <div class="stat-top"><span>حقوق محاسبه‌شده</span><span class="stat-icon">💜</span></div>
-            <div class="stat-value" id="salaryValue">—</div>
-            <div class="stat-foot">آخرین دوره حقوقی</div>
-          </div>
-          <div class="stat glass">
-            <div class="stat-top"><span>پول در دسترس</span><span class="stat-icon">💳</span></div>
-            <div class="stat-value" id="moneyValue">—</div>
-            <div class="stat-foot">موجودی حساب‌ها</div>
-          </div>
-          <div class="stat glass">
-            <div class="stat-top"><span>دارایی خالص</span><span class="stat-icon">◈</span></div>
-            <div class="stat-value" id="assetsValue">—</div>
-            <div class="stat-foot">پس از درنظرگرفتن بدهی‌ها</div>
-          </div>
-          <div class="stat glass">
-            <div class="stat-top"><span>ساعت کاری این ماه</span><span class="stat-icon">◷</span></div>
-            <div class="stat-value" id="hoursValue">—</div>
-            <div class="stat-foot">بر اساس جلسات ثبت‌شده</div>
-          </div>
-        </section>
-
-        <section class="content-grid">
-          <div class="section-card glass">
-            <div class="section-head"><h3>دسترسی سریع</h3><span>میانبر بخش‌ها</span></div>
-            <div class="quick-grid">
-              <button class="quick" data-page="work"><b>◷</b>ثبت ساعت کاری</button>
-              <button class="quick" data-page="sales"><b>↗</b>ثبت فروش</button>
-              <button class="quick" data-page="payroll"><b>▤</b>فیش حقوقی</button>
-              <button class="quick" data-page="accounts"><b>💳</b>تراکنش مالی</button>
-              <button class="quick" data-page="claims"><b>◈</b>مطالبات فروشگاه</button>
-              <button class="quick" data-page="calendar"><b>▦</b>یادآورها</button>
-            </div>
-          </div>
-          <div class="section-card glass">
-            <div class="section-head"><h3>وضعیت سیستم</h3><span>اتصال زنده</span></div>
-            <div class="activity"><span class="activity-dot"></span><span id="connectionStatus">در حال بررسی اتصال...</span></div>
-            <div class="activity"><span class="activity-dot"></span><span>حفاظت داده‌ها با احراز هویت Supabase</span></div>
-            <div class="activity"><span class="activity-dot"></span><span>نمایش اطلاعات مخصوص حساب واردشده</span></div>
-          </div>
-        </section>
-        <div class="footer">MY SALARY · Your private financial workspace</div>
-      </div>
+      <div id="pageContent"></div>
     </main>
   </section>
 
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-    // فقط آدرس پروژه و کلید عمومی Publishable را اینجا وارد کن.
     const SUPABASE_URL = "https://wsvbqopqltweegalzzyz.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_rnG-0wBzt0XnpvFtCB60tg_DLrXU-iL";
-
-    const configured =
-      SUPABASE_URL.startsWith("https://") &&
-      !SUPABASE_URL.includes("YOUR_") &&
-      !SUPABASE_PUBLISHABLE_KEY.includes("YOUR_") &&
-      SUPABASE_PUBLISHABLE_KEY.length > 10;
-
-    const $ = (id) => document.getElementById(id);
-    const authScreen = $("authScreen");
-    const appScreen = $("appScreen");
-    const authMessage = $("authMessage");
-
-    let supabase = null;
-    let currentUser = null;
-
-    if (configured) {
-      supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-      $("connectionStatus").textContent = "اتصال اولیه آماده است";
-    } else {
-      $("connectionStatus").textContent = "کلیدهای اتصال هنوز تنظیم نشده‌اند";
-    }
-
-    function showMessage(message, type = "") {
-      authMessage.textContent = message;
-      authMessage.className = "message " + type;
-    }
-
-    function setLoading(button, loading, label) {
-      button.disabled = loading;
-      button.textContent = loading ? "لطفاً صبر کن..." : label;
-    }
-
-    function showApp(user) {
-      currentUser = user;
-      authScreen.classList.add("hidden");
-      appScreen.classList.remove("hidden");
-      $("userEmail").textContent = user.email || "کاربر";
-      $("connectionStatus").textContent = "متصل به Supabase";
-      $("todayText").textContent = new Intl.DateTimeFormat("fa-IR", {
-        dateStyle: "full", timeZone: "Asia/Tehran"
-      }).format(new Date());
-      loadDashboard();
-    }
-
-    function showAuth() {
-      currentUser = null;
-      appScreen.classList.add("hidden");
-      authScreen.classList.remove("hidden");
-    }
-
-    $("loginBtn").addEventListener("click", async () => {
-      if (!supabase) return showMessage("ابتدا آدرس و کلید عمومی Supabase را در کد تنظیم کن.", "error");
-      const email = $("email").value.trim();
-      const password = $("password").value;
-      if (!email || !password) return showMessage("ایمیل و رمز عبور را وارد کن.", "error");
-
-      setLoading($("loginBtn"), true, "ورود به حساب");
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      setLoading($("loginBtn"), false, "ورود به حساب");
-      if (error) showMessage(error.message, "error");
-    });
-
-    $("signupBtn").addEventListener("click", async () => {
-      if (!supabase) return showMessage("ابتدا تنظیمات Supabase را کامل کن.", "error");
-      const email = $("email").value.trim();
-      const password = $("password").value;
-      if (!email || password.length < 6)
-        return showMessage("ایمیل معتبر و رمز عبور حداقل ۶ کاراکتری وارد کن.", "error");
-
-      setLoading($("signupBtn"), true, "ساخت حساب");
-      const { data, error } = await supabase.auth.signUp({ email, password });
-      setLoading($("signupBtn"), false, "ساخت حساب");
-
-      if (error) return showMessage(error.message, "error");
-      if (data.session) showMessage("حساب ساخته شد و وارد شدی.", "success");
-      else showMessage("حساب ساخته شد. اگر تأیید ایمیل فعال است، ایمیلت را بررسی کن.", "success");
-    });
-
-    $("resetBtn").addEventListener("click", async () => {
-      if (!supabase) return showMessage("ابتدا تنظیمات Supabase را کامل کن.", "error");
-      const email = $("email").value.trim();
-      if (!email) return showMessage("ابتدا ایمیلت را وارد کن.", "error");
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
-      showMessage(error ? error.message : "لینک بازیابی رمز برای ایمیلت ارسال شد.", error ? "error" : "success");
-    });
-
-    $("logoutBtn").addEventListener("click", async () => {
-      if (!supabase) return showAuth();
-      const { error } = await supabase.auth.signOut();
-      if (error) alert("خروج انجام نشد: " + error.message);
-      else showAuth();
-    });
-
-    async function readFirst(query) {
-      const { data, error } = await query;
-      if (error) {
-        console.warn("Dashboard data:", error.message);
-        return null;
-      }
-      return data && data.length ? data[0] : null;
-    }
-
-    function money(value) {
-      if (value === null || value === undefined || value === "") return "—";
-      return new Intl.NumberFormat("fa-IR", { maximumFractionDigits: 0 }).format(Number(value)) + " تومان";
-    }
-
-    async function loadDashboard() {
-      if (!supabase || !currentUser) return;
-
-      const [finance, payroll, work] = await Promise.all([
-        readFirst(supabase.from("v_finance_dashboard").select("*").eq("user_id", currentUser.id).limit(1)),
-        readFirst(supabase.from("v_payroll_dashboard_summary").select("*").eq("user_id", currentUser.id).limit(1)),
-        readFirst(supabase.from("v_daily_work_summary").select("actual_work_minutes").eq("user_id", currentUser.id).gte("day", new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0,10)))
-      ]);
-
-      if (finance) {
-        $("moneyValue").textContent = money(finance.available_money);
-        $("assetsValue").textContent = money(finance.net_worth);
-      }
-
-      if (payroll) {
-        const total = payroll.calculated_total ?? payroll.total_payroll ?? payroll.total_amount;
-        if (total !== undefined) $("salaryValue").textContent = money(total);
-      }
-
-      if (work && Array.isArray(work)) {
-        const minutes = work.reduce((sum, row) => sum + Number(row.actual_work_minutes || 0), 0);
-        $("hoursValue").textContent = new Intl.NumberFormat("fa-IR").format(Math.floor(minutes / 60)) + " ساعت";
-      } else {
-        $("hoursValue").textContent = "—";
-      }
-    }
-
-    const pageNames = {
-      dashboard:"داشبورد تحلیل", work:"ثبت ساعت کاری", leave:"مرخصی‌ها",
-      sales:"فروش و پورسانت", payroll:"حقوق و دریافتی",
-      claims:"مطالبات فروشگاه", finance:"MY FINANCE",
-      accounts:"حساب‌ها و تراکنش‌ها", installments:"اقساط و بدهی‌ها",
-      receivables:"طلب از دیگران", reports:"گزارش‌ها و تحلیل",
-      goals:"اهداف و پیش‌بینی", calendar:"تقویم و یادآورها",
-      reconciliation:"مرکز مغایرت‌یابی", history:"تاریخچه تغییرات",
-      trace:"ردیابی منشأ اعداد", archive:"بایگانی و پشتیبان‌گیری",
-      settings:"تنظیمات مدیریتی"
+    const $ = id => document.getElementById(id);
+    const authScreen=$("authScreen"), appScreen=$("appScreen"), authMessage=$("authMessage");
+    const supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+    let currentUser=null, activePage="dashboard", cache={};
+    const titles={dashboard:"داشبورد تحلیل",work:"ثبت ساعت کاری",leave:"مرخصی‌ها",sales:"فروش و پورسانت",payroll:"حقوق و دریافتی",claims:"مطالبات فروشگاه",finance:"MY FINANCE",accounts:"حساب‌ها و تراکنش‌ها",installments:"اقساط و بدهی‌ها",receivables:"طلب از دیگران",reports:"گزارش‌ها و تحلیل",goals:"اهداف و پیش‌بینی",calendar:"تقویم و یادآورها",reconciliation:"مرکز مغایرت‌یابی",history:"تاریخچه تغییرات",trace:"ردیابی منشأ اعداد",archive:"بایگانی و پشتیبان‌گیری",settings:"تنظیمات مدیریتی"};
+    const today=()=>{const d=new Date();return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Tehran"}).format(d)};
+    const fmtDate=v=>v?new Intl.DateTimeFormat("fa-IR",{dateStyle:"medium",timeZone:"Asia/Tehran"}).format(new Date(v+"T12:00:00")):"—";
+    const fmtDateTime=v=>v?new Intl.DateTimeFormat("fa-IR",{dateStyle:"short",timeStyle:"short",timeZone:"Asia/Tehran"}).format(new Date(v)):"—";
+    const num=v=>Number(v||0);
+    const money=v=>v==null?"—":new Intl.NumberFormat("fa-IR",{maximumFractionDigits:0}).format(num(v))+" تومان";
+    const nfmt=v=>new Intl.NumberFormat("fa-IR").format(num(v));
+    const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const msg=(text,type="info")=>`<div class="alert ${type}">${esc(text)}</div>`;
+    function notify(text,type="ok"){const el=$("pageNotice");if(el){el.innerHTML=msg(text,type);setTimeout(()=>{if(el)el.innerHTML=""},6500)}else alert(text)}
+    function setAuthMessage(t,type=""){authMessage.textContent=t;authMessage.className="message "+type}
+    function localIso(date,time){return new Date(`${date}T${time}:00+03:30`).toISOString()}
+    function field(name,label,type="text",opts={}){return {name,label,type,...opts}}
+    function selectField(name,label,options){return field(name,label,"select",{options})}
+    const configs={
+      work:{table:"work_sessions",title:"ثبت بازه کاری",desc:"هر بازه ورود و خروج را جداگانه ثبت کن. برای هر روز می‌توانی چند بازه داشته باشی.",fields:[field("work_date","تاریخ","date",{required:true,default:today()}),field("start_time","ساعت ورود","time",{required:true}),field("end_time","ساعت خروج","time"),field("description","توضیحات","text")],columns:[["work_date","تاریخ",fmtDate],["started_at","ورود",fmtDateTime],["ended_at","خروج",fmtDateTime],["break_minutes","وقفه (دقیقه)",nfmt],["description","توضیحات"]],order:"work_date"},
+      leave:{table:"leave_records",title:"ثبت مرخصی",desc:"ثبت مرخصی روزانه یا ساعتی. نوع و وضعیت به‌صورت متن ذخیره می‌شود.",fields:[field("leave_date","تاریخ","date",{required:true,default:today()}),selectField("leave_type","نوع مرخصی",["daily","hourly","annual","sick","unpaid"].map(x=>[x,x])),field("minutes","مدت (دقیقه؛ برای مرخصی ساعتی)","number",{default:"0"}),field("start_time","از ساعت","time"),field("end_time","تا ساعت","time"),selectField("status","وضعیت",["pending","approved","rejected"].map(x=>[x,x])),field("description","توضیحات","text")],columns:[["leave_date","تاریخ",fmtDate],["leave_type","نوع"],["minutes","دقیقه",nfmt],["status","وضعیت"],["description","توضیحات"]],order:"leave_date"},
+      sales:{table:"sales_records",title:"ثبت فروش",desc:"فروش سایت و حضوری جدا ثبت می‌شود؛ محاسبه نهایی پورسانت از قانون فعال دیتابیس انجام می‌شود.",fields:[field("sale_date","تاریخ فروش","date",{required:true,default:today()}),selectField("sales_channel","کانال فروش",[["website","سایت"],["in_person","حضوری"]]),field("amount","مبلغ فروش (تومان)","number",{required:true}),field("description","توضیحات","text")],columns:[["sale_date","تاریخ",fmtDate],["sales_channel","کانال"],["amount","مبلغ",money],["description","توضیحات"]],order:"sale_date"},
+      claims:{table:"store_claims",title:"ثبت هزینه پرداخت‌شده برای فروشگاه",desc:"فقط هزینه‌ای را ثبت کن که واقعاً از پول شخصی پرداخت کرده‌ای. ثبت این مطالبه به‌تنهایی موجودی حساب را تغییر نمی‌دهد.",fields:[field("expense_date","تاریخ هزینه","date",{required:true,default:today()}),field("title","عنوان هزینه","text",{required:true}),field("category","دسته‌بندی"),field("total_amount","مبلغ (تومان)","number",{required:true}),field("included_in_payroll","در حقوق لحاظ شده؟","checkbox",{default:false}),field("notes","توضیحات","text")],columns:[["expense_date","تاریخ",fmtDate],["title","عنوان"],["category","دسته"],["total_amount","مبلغ",money],["included_in_payroll","در حقوق؟",v=>v?"بله":"خیر"]],order:"expense_date"},
+      accounts:{table:"finance_accounts",title:"افزودن حساب مالی",desc:"حساب‌های بانکی، نقدی یا کیف پول را تعریف کن. موجودی افتتاحیه را فقط یک بار وارد کن.",fields:[field("account_name","نام حساب","text",{required:true}),selectField("account_type","نوع حساب",[["bank","بانکی"],["cash","نقدی"],["wallet","کیف پول"],["other","سایر"]]),field("opening_balance","موجودی افتتاحیه (تومان)","number",{default:"0"}),field("institution","بانک / مؤسسه"),field("description","توضیحات")],columns:[["account_name","نام حساب"],["account_type","نوع"],["opening_balance","موجودی اولیه",money],["institution","بانک"],["is_active","فعال",v=>v?"بله":"خیر"]],order:"created_at"},
+      transactions:{table:"finance_transactions",title:"ثبت تراکنش مالی",desc:"درآمد، هزینه یا انتقال بین حساب‌ها. انتقال نیازمند حساب مقصد است. تراکنش‌های مرتبط با حقوق/مطالبات را از مسیر اختصاصی خودشان ثبت کن.",fields:[selectField("transaction_type","نوع تراکنش",[["income","درآمد"],["expense","هزینه"],["transfer","انتقال"]]),field("account_id","شناسه حساب مبدأ","text",{required:true,placeholder:"UUID حساب"}),field("destination_account_id","شناسه حساب مقصد (برای انتقال)","text"),field("amount","مبلغ (تومان)","number",{required:true}),field("transaction_date","تاریخ و ساعت","datetime-local",{required:true}),field("title","عنوان","text",{required:true}),field("description","توضیحات"),field("source_type","منشأ (اختیاری)")],columns:[["transaction_date","تاریخ",fmtDateTime],["transaction_type","نوع"],["title","عنوان"],["amount","مبلغ",money],["source_type","منشأ"]],order:"transaction_date"},
+      installments:{table:"finance_installments",title:"ثبت بدهی / قسط",desc:"اطلاعات کلی بدهی و برنامه اقساط را ثبت کن. پرداخت هر قسط از مسیر پرداخت ثبت می‌شود.",fields:[field("title","عنوان بدهی","text",{required:true}),field("creditor_name","طلبکار"),field("total_amount","کل بدهی (تومان)","number",{required:true}),field("installment_count","تعداد اقساط","number",{required:true}),field("installment_amount","مبلغ هر قسط","number",{required:true}),field("first_due_date","سررسید اولین قسط","date",{required:true}),field("next_due_date","سررسید بعدی","date"),field("description","توضیحات")],columns:[["title","عنوان"],["creditor_name","طلبکار"],["total_amount","کل بدهی",money],["installment_count","تعداد",nfmt],["installment_amount","مبلغ قسط",money],["next_due_date","سررسید",fmtDate],["status","وضعیت"]],order:"next_due_date"},
+      receivables:{table:"finance_receivables",title:"ثبت طلب از دیگران",desc:"طلب وصول‌نشده را جدا از پول نقد نگه دار. دریافت وجه از مسیر دریافت طلب انجام می‌شود.",fields:[field("person_name","نام شخص / مجموعه","text",{required:true}),field("title","عنوان طلب","text",{required:true}),field("total_amount","مبلغ طلب (تومان)","number",{required:true}),field("due_date","سررسید","date"),field("description","توضیحات")],columns:[["person_name","بدهکار"],["title","عنوان"],["total_amount","مبلغ",money],["due_date","سررسید",fmtDate],["status","وضعیت"]],order:"due_date"},
+      goals:{table:"performance_goals",title:"تعریف هدف",desc:"هدف فروش یا کارکرد را با بازه زمانی مشخص کن. پیشرفت از ویوی محاسباتی دیتابیس خوانده می‌شود.",fields:[field("goal_name","عنوان هدف","text",{required:true}),selectField("goal_type","نوع هدف",[["sales","فروش"],["work_minutes","دقایق کار"],["income","درآمد"],["custom","سایر"]]),field("target_value","مقدار هدف","number",{required:true}),field("period_start","شروع بازه","date",{required:true,default:today()}),field("period_end","پایان بازه","date",{required:true}),field("sales_channel","کانال فروش (اختیاری)"),field("notes","توضیحات")],columns:[["goal_name","هدف"],["goal_type","نوع"],["target_value","مقدار هدف",nfmt],["actual_value","مقدار فعلی",nfmt],["achievement_percent","تحقق",v=>v==null?"—":nfmt(v)+"٪"],["period_end","پایان",fmtDate]],order:"period_start"},
+      calendar:{table:"calendar_reminders",title:"ثبت یادآور",desc:"برای سررسیدها و کارهای مهم یادآور بساز.",fields:[field("title","عنوان","text",{required:true}),selectField("reminder_type","نوع",["general","financial","work","payment","personal"].map(x=>[x,x])),field("due_at","زمان یادآوری","datetime-local",{required:true}),field("notify_before_minutes","یادآوری چند دقیقه قبل","number",{default:"0"}),field("notes","توضیحات")],columns:[["title","عنوان"],["reminder_type","نوع"],["due_at","زمان",fmtDateTime],["status","وضعیت"],["notes","توضیحات"]],order:"due_at"}
     };
-
-    function openPage(page) {
-      if (!pageNames[page]) return;
-      document.querySelectorAll(".nav-btn").forEach(btn =>
-        btn.classList.toggle("active", btn.dataset.page === page)
-      );
-      $("pageTitle").textContent = pageNames[page];
-      $("sidebar").classList.remove("open");
-
-      if (page === "dashboard") {
-        $("pageContent").innerHTML = `
-          <section class="welcome glass">
-            <h3>خوش اومدی 👋</h3>
-            <p>خلاصه وضعیت مالی و کاری تو در یک نگاه.</p>
-          </section>
-          <div class="notice">برای مشاهده آمار به‌روز، اطلاعات داشبورد از Supabase خوانده می‌شود.</div>`;
-        loadDashboard();
-        return;
-      }
-
-      const descriptions = {
-        work:"ثبت ورود و خروج‌های متعدد، وقفه‌ها و محاسبه دقیق دقیقه‌های کارکرد.",
-        leave:"مدیریت مرخصی کامل و ساعتی و مشاهده سوابق مرخصی.",
-        sales:"ثبت فروش سایت و حضوری و محاسبه پورسانت بر اساس قوانین فعال.",
-        payroll:"مشاهده فیش حقوقی، پرداخت‌ها، مانده و سوابق دوره‌های حقوقی.",
-        claims:"ثبت هزینه‌هایی که از پول شخصی برای فروشگاه پرداخت کرده‌ای.",
-        finance:"نمای کلی پول در دسترس، دارایی خالص، بدهی‌ها و مطالبات.",
-        accounts:"مدیریت حساب‌ها و ثبت درآمد، هزینه و انتقال بین حساب‌ها.",
-        installments:"مدیریت اقساط، پرداخت جزئی و مانده بدهی‌ها.",
-        receivables:"ثبت طلب از دیگران و پیگیری تسویه‌ها.",
-        reports:"گزارش‌های ماهانه و سالانه حقوق، فروش و کارکرد.",
-        goals:"تعریف هدف فروش و ساعت کاری و بررسی میزان تحقق.",
-        calendar:"مدیریت یادآورها و سررسیدهای مالی و کاری.",
-        reconciliation:"بررسی مغایرت بین پرداخت‌ها، فیش‌ها و تراکنش‌ها.",
-        history:"مشاهده تاریخچه رویدادهای ثبت‌شده در سیستم.",
-        trace:"ردیابی منشأ تراکنش‌ها، فیش‌ها و اصلاحیه‌ها.",
-        archive:"ساخت و مشاهده آرشیو اطلاعات شخصی.",
-        settings:"مدیریت تنظیمات حقوق، پورسانت و مشخصات حساب."
-      };
-
-      $("pageContent").innerHTML = `
-        <section class="page-panel glass">
-          <h3>${pageNames[page]}</h3>
-          <p>${descriptions[page] || "مدیریت اطلاعات این بخش."}</p>
-          <div class="notice">
-            پوسته رابط کاربری این بخش ساخته شده است. فرم‌ها، جدول‌ها و عملیات متصل به دیتابیس در ادامه مرحله ۲۴ تکمیل می‌شوند.
-          </div>
-        </section>`;
+    function showApp(user){currentUser=user;authScreen.classList.add("hidden");appScreen.classList.remove("hidden");$("userEmail").textContent=user.email||"کاربر";$("connectionStatus").textContent="متصل به Supabase";$("todayText").textContent=new Intl.DateTimeFormat("fa-IR",{dateStyle:"full",timeZone:"Asia/Tehran"}).format(new Date());openPage("dashboard")}
+    function showAuth(){currentUser=null;appScreen.classList.add("hidden");authScreen.classList.remove("hidden")}
+    async function authAction(action){const email=$("email").value.trim(),password=$("password").value;if(!email)return setAuthMessage("ایمیل را وارد کن.","error");let r;if(action==="login"){if(!password)return setAuthMessage("رمز عبور را وارد کن.","error");r=await supabase.auth.signInWithPassword({email,password})}else if(action==="signup"){if(password.length<6)return setAuthMessage("رمز عبور باید حداقل ۶ کاراکتر باشد.","error");r=await supabase.auth.signUp({email,password})}else{r=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.href})}setAuthMessage(r.error?r.error.message:(action==="reset"?"لینک بازیابی ارسال شد.":r.data.session?"با موفقیت وارد شدی.":"حساب ساخته شد؛ در صورت فعال بودن تأیید ایمیل، صندوق ورودی را بررسی کن."),r.error?"error":"success")}
+    $("loginBtn").onclick=()=>authAction("login");$("signupBtn").onclick=()=>authAction("signup");$("resetBtn").onclick=()=>authAction("reset");
+    $("logoutBtn").onclick=async()=>{const {error}=await supabase.auth.signOut();if(error)alert(error.message);else showAuth()};
+    $("menuBtn").onclick=()=>$("sidebar").classList.toggle("open");
+    document.addEventListener("click",e=>{const b=e.target.closest("[data-page]");if(b)openPage(b.dataset.page)});
+    function shell(html){$("pageContent").innerHTML=html}
+    function navActive(page){document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page))}
+    async function fetchRows(table,order="created_at",limit=100){const {data,error}=await supabase.from(table).select("*").eq("user_id",currentUser.id).order(order,{ascending:false}).limit(limit);if(error)throw error;return data||[]}
+    async function getView(view){const {data,error}=await supabase.from(view).select("*").eq("user_id",currentUser.id).limit(100);if(error)throw error;return data||[]}
+    function formHtml(cfg){return `<form id="recordForm" class="panel glass"><div class="section-head"><h3>${cfg.title}</h3><span>ثبت اطلاعات</span></div><div class="form-grid">${cfg.fields.map(f=>{let val=f.default??"",required=f.required?"required":"";if(f.type==="select")return `<div class="control"><label>${f.label}</label><select name="${f.name}" ${required}>${f.options.map(o=>`<option value="${esc(o[0])}">${esc(o[1])}</option>`).join("")}</select></div>`;if(f.type==="checkbox")return `<div class="control"><label>${f.label}</label><select name="${f.name}"><option value="false">خیر</option><option value="true" ${val?"selected":""}>بله</option></select></div>`;return `<div class="control"><label>${f.label}</label><input name="${f.name}" type="${f.type||"text"}" value="${esc(val)}" ${required} ${f.placeholder?`placeholder="${esc(f.placeholder)}"`:""} ${f.type==="number"?'min="0" step="any"':""}></div>`}).join("")}</div><div class="form-actions"><button class="btn" type="submit">ثبت اطلاعات</button><span class="inline-note">ثبت به حساب واردشده متصل است.</span></div><div id="formFeedback"></div></form>`}
+    function tableHtml(rows,cols){if(!rows.length)return `<div class="empty">هنوز رکوردی برای نمایش وجود ندارد.</div>`;return `<div class="table-wrap"><table><thead><tr>${cols.map(c=>`<th>${c[1]}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td>${esc(c[2]?c[2](r[c[0]],r):r[c[0]]??"—")}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`}
+    async function openCrud(page){const cfg=configs[page];shell(`<section class="page-panel glass"><h3>${cfg.title}</h3><p>${cfg.desc}</p></section><div id="pageNotice"></div>${formHtml(cfg)}<section class="panel glass"><div class="toolbar"><h3>سوابق ثبت‌شده</h3><button id="refreshBtn" class="btn btn-outline btn-sm">بروزرسانی</button></div><div id="records" class="loading">در حال دریافت اطلاعات…</div></section>`);$("refreshBtn").onclick=()=>loadCrudRows(page);$("recordForm").onsubmit=async e=>{e.preventDefault();const fd=new FormData(e.currentTarget),row={user_id:currentUser.id};cfg.fields.forEach(f=>{let v=fd.get(f.name);if(v===null)return;if(f.type==="number")row[f.name]=v===""?0:Number(v);else if(f.type==="checkbox")row[f.name]=v==="true";else if(f.type==="datetime-local")row[f.name]=new Date(v).toISOString();else if(f.name==="start_time"||f.name==="end_time"){}else row[f.name]=v===""?null:v});if(page==="work"){const d=fd.get("work_date"),st=fd.get("start_time"),en=fd.get("end_time");if(!st){$("formFeedback").innerHTML=msg("ساعت ورود الزامی است.","bad");return}row.started_at=localIso(d,st);row.ended_at=en?localIso(d,en):null;delete row.start_time;delete row.end_time;delete row.work_date;row.work_date=d}const {error}=await supabase.from(cfg.table).insert(row);if(error){$("formFeedback").innerHTML=msg(error.message,"bad");return}e.currentTarget.reset();$("formFeedback").innerHTML=msg("اطلاعات با موفقیت ثبت شد.","ok");await loadCrudRows(page);if(page==="sales"||page==="work")loadDashboard()};await loadCrudRows(page)}
+    async function loadCrudRows(page){const cfg=configs[page],el=$("records");if(!el)return;el.innerHTML="در حال دریافت…";try{let rows;if(page==="goals"){rows=await getView("v_performance_goal_progress");cache.goals=rows;el.innerHTML=tableHtml(rows,cfg.columns);return}else rows=await fetchRows(cfg.table,cfg.order);cache[page]=rows;el.innerHTML=tableHtml(rows,cfg.columns)}catch(e){el.innerHTML=msg("خطا در دریافت اطلاعات: "+e.message,"bad")}}
+    async function dashboard(){shell(`<section class="welcome glass"><h3>خوش اومدی 👋</h3><p>آمار زیر مستقیماً از داده‌های حساب تو در Supabase خوانده می‌شود.</p></section><section class="grid"><div class="stat glass"><div class="stat-top"><span>حقوق محاسبه‌شده</span><span class="stat-icon">💜</span></div><div class="stat-value" id="salaryValue">—</div><div class="stat-foot">مجموع دوره‌های حقوقی</div></div><div class="stat glass"><div class="stat-top"><span>پول در دسترس</span><span class="stat-icon">💳</span></div><div class="stat-value" id="moneyValue">—</div><div class="stat-foot">موجودی حساب‌ها</div></div><div class="stat glass"><div class="stat-top"><span>دارایی خالص</span><span class="stat-icon">◈</span></div><div class="stat-value" id="assetsValue">—</div><div class="stat-foot">پس از بدهی‌ها</div></div><div class="stat glass"><div class="stat-top"><span>کارکرد این ماه</span><span class="stat-icon">◷</span></div><div class="stat-value" id="hoursValue">—</div><div class="stat-foot">بر اساس جمع دقیقه‌های ثبت‌شده</div></div></section><section class="content-grid"><div class="section-card glass"><div class="section-head"><h3>دسترسی سریع</h3><span>میانبر بخش‌ها</span></div><div class="quick-grid"><button class="quick" data-page="work"><b>◷</b>ثبت ساعت کاری</button><button class="quick" data-page="sales"><b>↗</b>ثبت فروش</button><button class="quick" data-page="payroll"><b>▤</b>حقوق</button><button class="quick" data-page="transactions"><b>💳</b>تراکنش مالی</button><button class="quick" data-page="claims"><b>◈</b>مطالبات فروشگاه</button><button class="quick" data-page="calendar"><b>▦</b>یادآورها</button></div></div><div class="section-card glass"><div class="section-head"><h3>وضعیت اتصال</h3><span>داده زنده</span></div><div id="dashboardStatus" class="inline-note">در حال دریافت اطلاعات…</div></div></section><div id="pageNotice"></div>`);await loadDashboard()}
+    async function loadDashboard(){if(!currentUser)return;const monthStart=today().slice(0,7)+"-01";const [f,p,w]=await Promise.allSettled([supabase.from("v_finance_dashboard").select("*").maybeSingle(),getView("v_payroll_dashboard_summary"),supabase.from("v_daily_work_summary").select("actual_work_minutes").eq("user_id",currentUser.id).gte("day",monthStart)]);if(f.status==="fulfilled"&&!f.value.error&&f.value.data){$("moneyValue").textContent=money(f.value.data.available_money);$("assetsValue").textContent=money(f.value.data.net_worth)}else $("moneyValue").textContent="—";if(p.status==="fulfilled"&&p.value[0])$("salaryValue").textContent=money(p.value[0].total_payroll);if(w.status==="fulfilled"&&!w.value.error){const mins=(w.value.data||[]).reduce((s,r)=>s+num(r.actual_work_minutes),0);$("hoursValue").textContent=nfmt(Math.floor(mins/60))+" ساعت و "+nfmt(mins%60)+" دقیقه"}const errors=[f,p].filter(x=>x.status==="rejected").length+(w.status==="fulfilled"&&w.value.error?1:0);$("dashboardStatus").innerHTML=errors?msg("بخشی از ویوها در دسترس نیستند؛ جزئیات خطا را در Console مرورگر ببین.","bad"):"اطلاعات داشبورد با موفقیت از دیتابیس دریافت شد."}
+    async function payrollPage(){shell(`<section class="page-panel glass"><h3>حقوق و دریافتی</h3><p>محاسبه حقوق با تابع دیتابیس انجام می‌شود تا قوانین ثبت‌شده و snapshot دوره حفظ شود.</p><div class="alert info">قبل از محاسبه، فروش‌ها و بازه‌های کاری همان دوره را ثبت کن. تاریخ شروع و پایان را به فرمت میلادی وارد کن؛ نمایش تاریخ‌ها در فهرست فارسی است.</div></section><div id="pageNotice"></div><form id="payrollCalc" class="panel glass"><div class="form-grid"><div class="control"><label>سال میلادی</label><input name="year" type="number" min="2000" max="2200" required value="${new Date().getFullYear()}"></div><div class="control"><label>ماه عددی (۱ تا ۱۲)</label><input name="month" type="number" min="1" max="12" required value="${new Date().getMonth()+1}"></div><div class="control"><label>شروع دوره</label><input name="period_start" type="date" required></div><div class="control"><label>پایان دوره</label><input name="period_end" type="date" required></div></div><div class="form-actions"><button class="btn">محاسبه دوره حقوق</button></div><div id="payrollFeedback"></div></form><section class="panel glass"><div class="toolbar"><h3>دوره‌های حقوقی</h3><button id="refreshPayroll" class="btn btn-outline btn-sm">بروزرسانی</button></div><div id="payrollRows" class="loading">در حال دریافت…</div></section>`);$("payrollCalc").onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.currentTarget));const {data,error}=await supabase.rpc("calculate_payroll_period",{p_year:Number(d.year),p_month:Number(d.month),p_period_start:d.period_start,p_period_end:d.period_end});$("payrollFeedback").innerHTML=error?msg(error.message,"bad"):msg("دوره حقوق محاسبه شد. شناسه: "+data,"ok");if(!error)loadPayrollRows()};$("refreshPayroll").onclick=loadPayrollRows;await loadPayrollRows()}
+    async function loadPayrollRows(){const el=$("payrollRows");if(!el)return;const {data,error}=await supabase.from("payroll_periods").select("*").eq("user_id",currentUser.id).order("year",{ascending:false}).order("month",{ascending:false});if(error){el.innerHTML=msg(error.message,"bad");return}el.innerHTML=tableHtml(data||[],[["year","سال"],["month","ماه"],["status","وضعیت"],["sales_total","فروش",money],["commission_total","پورسانت",money],["calculated_total","حقوق محاسبه‌شده",money],["paid_amount","پرداخت‌شده",money],["outstanding_amount","مانده",money]])}
+    async function reportsPage(){
+      shell(`<section class="page-panel glass"><h3>گزارش‌ها و تحلیل</h3><p>گزارش‌ها از ویوهای تجمیعی دیتابیس خوانده می‌شوند.</p></section><section class="panel glass"><h3>گزارش ماهانه فروش</h3><div id="salesReport" class="loading"></div></section><section class="panel glass"><h3>گزارش ماهانه کارکرد</h3><div id="workReport" class="loading"></div></section><section class="panel glass"><h3>گزارش سالانه حقوق</h3><div id="payReport" class="loading"></div></section>`);
+      const reports=[
+        {view:"v_sales_monthly_report",id:"salesReport",cols:[["month_start","ماه",fmtDate],["sales_count","تعداد فروش",nfmt],["website_sales","سایت",money],["in_person_sales","حضوری",money],["total_sales","مجموع",money]]},
+        {view:"v_work_monthly_report",id:"workReport",cols:[["month_start","ماه",fmtDate],["worked_days","روز کاری",nfmt],["total_work_minutes","دقایق کار",nfmt],["total_payable_minutes","دقایق قابل پرداخت",nfmt]]},
+        {view:"v_payroll_yearly_report",id:"payReport",cols:[["year","سال"],["payroll_period_count","دوره‌ها",nfmt],["total_calculated_payroll","حقوق محاسبه‌شده",money],["total_paid","پرداختی",money],["total_outstanding","مانده",money]]}
+      ];
+      for(const r of reports){try{const {data,error}=await supabase.from(r.view).select("*").eq("user_id",currentUser.id).limit(50);$(r.id).innerHTML=error?msg(error.message,"bad"):tableHtml(data||[],r.cols)}catch(e){$(r.id).innerHTML=msg(e.message,"bad")}}
     }
-
-    document.addEventListener("click", (event) => {
-      const target = event.target.closest("[data-page]");
-      if (target) openPage(target.dataset.page);
-    });
-
-    $("menuBtn").addEventListener("click", () => $("sidebar").classList.toggle("open"));
-
-    if (supabase) {
-      supabase.auth.getSession().then(({ data, error }) => {
-        if (error) showMessage(error.message, "error");
-        if (data.session?.user) showApp(data.session.user);
-        else showAuth();
-      });
-
-      supabase.auth.onAuthStateChange((_event, session) => {
-        if (session?.user) showApp(session.user);
-        else showAuth();
-      });
-    } else {
-      showAuth();
-    }
+    async function reconciliation(){const views=["v_reconciliation_payroll","v_reconciliation_payroll_links","v_reconciliation_installments","v_reconciliation_receivables","v_reconciliation_store_claims"];shell(`<section class="page-panel glass"><h3>مرکز مغایرت‌یابی</h3><p>فهرست موارد از ویوهای مغایرت دیتابیس خوانده می‌شود. این صفحه فقط گزارش می‌دهد و رکورد مالی را خودکار تغییر نمی‌دهد.</p></section><div id="reconSummary" class="panel glass loading">در حال دریافت…</div><div id="reconItems"></div>`);const {data,error}=await supabase.from("v_reconciliation_dashboard").select("*").eq("user_id",currentUser.id).maybeSingle();$("reconSummary").innerHTML=error?msg(error.message,"bad"):`<div class="metric-row"><div class="metric"><small>کل موارد</small><b>${nfmt(data?.total_issues)}</b></div><div class="metric"><small>بحرانی</small><b>${nfmt(data?.critical_issues)}</b></div><div class="metric"><small>زیاد</small><b>${nfmt(data?.high_issues)}</b></div></div>`;let html="";for(const v of views){const {data,error}=await supabase.from(v).select("*").eq("user_id",currentUser.id).limit(100);html+=`<section class="panel glass"><h3>${v}</h3>${error?msg(error.message,"bad"):tableHtml(data||[],[["issue_code","کد"],["severity","شدت"],["entity_type","نوع"],["expected_value","مقدار مورد انتظار",money],["actual_value","مقدار واقعی",money],["detected_at","زمان",fmtDateTime]])}</section>`}$("reconItems").innerHTML=html}
+    async function simpleViewPage(title,view,cols,desc=""){shell(`<section class="page-panel glass"><h3>${title}</h3><p>${desc}</p></section><section class="panel glass"><div id="viewRows" class="loading">در حال دریافت…</div></section>`);let q=supabase.from(view).select("*").limit(100);if(view!=="v_finance_dashboard")q=q.eq("user_id",currentUser.id);const {data,error}=await q;$("viewRows").innerHTML=error?msg(error.message,"bad"):tableHtml(data||[],cols)}
+    async function settingsPage(){shell(`<section class="page-panel glass"><h3>تنظیمات مدیریتی</h3><p>قوانین حقوق و پورسانت از جدول نسخه‌دار compensation_rules خوانده می‌شوند. ساخت قانون جدید با تابع امن دیتابیس انجام می‌شود.</p></section><div id="pageNotice"></div><form id="ruleForm" class="panel glass"><h3>ثبت قانون جدید حقوق</h3><div class="form-grid"><div class="control"><label>نام قانون</label><input name="rule_name" required value="قانون حقوق اصلی"></div><div class="control"><label>حقوق ثابت (تومان)</label><input name="fixed_salary" type="number" value="6000000" required></div><div class="control"><label>نرخ ساعتی (تومان)</label><input name="hourly_rate" type="number" value="30000" required></div><div class="control"><label>مدل پورسانت</label><select name="commission_mode"><option value="flat_rate">نرخ روی کل فروش (flat)</option><option value="progressive">پلکانی واقعی</option></select></div><div class="control"><label>مبنای فروش</label><select name="commission_basis"><option value="combined">مجموع</option><option value="website">سایت</option><option value="in_person">حضوری</option></select></div><div class="control"><label>تاریخ شروع اعتبار</label><input name="valid_from" type="date" required value="${today()}"></div><div class="control fullrow"><label>پله‌های پورسانت به صورت JSON (lower_amount, upper_amount, rate_percent, tier_order)</label><textarea name="tiers" required>[{"lower_amount":0,"upper_amount":299000000,"rate_percent":2,"tier_order":1},{"lower_amount":299000000,"upper_amount":null,"rate_percent":3,"tier_order":2}]</textarea></div><div class="control fullrow"><label>یادداشت</label><input name="notes"></div></div><div class="form-actions"><button class="btn">ثبت نسخه جدید قانون</button></div><div id="ruleFeedback"></div></form><section class="panel glass"><h3>قوانین ثبت‌شده</h3><div id="rulesRows" class="loading"></div></section>`);$("ruleForm").onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.currentTarget));let tiers;try{tiers=JSON.parse(d.tiers);if(!Array.isArray(tiers))throw Error("tiers باید آرایه باشد")}catch(err){$("ruleFeedback").innerHTML=msg("JSON پله‌ها معتبر نیست: "+err.message,"bad");return}const args={p_rule_name:d.rule_name,p_fixed_salary:Number(d.fixed_salary),p_hourly_rate:Number(d.hourly_rate),p_commission_mode:d.commission_mode,p_commission_basis:d.commission_basis,p_valid_from:d.valid_from,p_tiers:tiers,p_notes:d.notes||null};const {data,error}=await supabase.rpc("create_compensation_rule",args);$("ruleFeedback").innerHTML=error?msg(error.message,"bad"):msg("قانون جدید ثبت شد. شناسه: "+data,"ok");if(!error)loadRules()};await loadRules()}
+    async function loadRules(){const el=$("rulesRows");if(!el)return;const {data,error}=await supabase.from("compensation_rules").select("*").eq("user_id",currentUser.id).order("valid_from",{ascending:false});el.innerHTML=error?msg(error.message,"bad"):tableHtml(data||[],[["rule_name","نام قانون"],["fixed_salary","حقوق ثابت",money],["hourly_rate","نرخ ساعتی",money],["commission_mode","مدل"],["commission_basis","مبنا"],["valid_from","شروع اعتبار",fmtDate],["is_active","فعال",v=>v?"بله":"خیر"]])}
+    async function archivePage(){shell(`<section class="page-panel glass"><h3>بایگانی و پشتیبان‌گیری</h3><p>ساخت snapshot از طریق تابع create_personal_data_archive انجام می‌شود.</p></section><div id="pageNotice"></div><form id="archiveForm" class="panel glass"><div class="control"><label>نام آرشیو</label><input name="archive_name" required value="پشتیبان ${today()}"></div><div class="form-actions"><button class="btn">ساخت نسخه پشتیبان</button></div><div id="archiveFeedback"></div></form><section class="panel glass"><h3>آرشیوهای قبلی</h3><div id="archiveRows" class="loading"></div></section>`);$("archiveForm").onsubmit=async e=>{e.preventDefault();const name=new FormData(e.currentTarget).get("archive_name");const {data,error}=await supabase.rpc("create_personal_data_archive",{p_archive_name:name});$("archiveFeedback").innerHTML=error?msg(error.message,"bad"):msg("نسخه پشتیبان ایجاد شد. شناسه: "+data,"ok");if(!error)loadArchives()};await loadArchives()}
+    async function loadArchives(){const el=$("archiveRows");if(!el)return;const {data,error}=await supabase.from("data_archive_snapshots").select("id,archive_name,archive_format,record_count,created_at,checksum").eq("user_id",currentUser.id).order("created_at",{ascending:false});el.innerHTML=error?msg(error.message,"bad"):tableHtml(data||[],[["archive_name","نام"],["archive_format","قالب"],["record_count","تعداد رکورد",nfmt],["created_at","تاریخ",fmtDateTime],["checksum","Checksum"]])}
+    async function openPage(page){if(!titles[page])return;activePage=page;navActive(page);$("pageTitle").textContent=titles[page];$("sidebar").classList.remove("open");try{if(page==="dashboard")return await dashboard();if(configs[page])return await openCrud(page);if(page==="transactions")return await openCrud("transactions");if(page==="payroll")return await payrollPage();if(page==="reports")return await reportsPage();if(page==="reconciliation")return await reconciliation();if(page==="history")return await simpleViewPage(titles[page],"v_audit_history",[["created_at","زمان",fmtDateTime],["action","عملیات"],["entity_type","نوع رکورد"],["entity_id","شناسه"],["details","جزئیات",v=>JSON.stringify(v)]],"رویدادهای قابل مشاهده در audit_logs.");if(page==="trace")return await simpleViewPage(titles[page],"v_financial_source_trace",[["transaction_date","تاریخ",fmtDateTime],["title","عنوان"],["amount","مبلغ",money],["source_type","منشأ"],["account_name","حساب"],["payroll_year","سال حقوق"],["payroll_month","ماه حقوق"]],"منشأ تراکنش‌ها و ارتباط آن‌ها با پرداخت‌های دیگر.");if(page==="archive")return await archivePage();if(page==="settings")return await settingsPage();if(page==="finance")return await simpleViewPage("نمای کلی امور مالی","v_finance_dashboard",[["available_money","پول در دسترس",money],["receivables","مطالبات",money],["debts","بدهی‌ها",money],["total_financial_assets","کل دارایی",money],["net_worth","دارایی خالص",money]]);if(page==="installments")return await simpleViewPage(titles[page],"v_finance_installment_balances",[["title","عنوان"],["creditor_name","طلبکار"],["total_amount","کل",money],["paid_amount","پرداخت‌شده",money],["remaining_amount","مانده",money],["next_due_date","سررسید",fmtDate],["status","وضعیت"]]);if(page==="receivables")return await openCrud("receivables");if(page==="accounts")return await openCrud("accounts");if(page==="goals")return await openCrud("goals");if(page==="calendar")return await openCrud("calendar");if(page==="leave")return await openCrud("leave");if(page==="work")return await openCrud("work");if(page==="sales")return await openCrud("sales");if(page==="claims")return await openCrud("claims");shell(`<section class="page-panel glass"><h3>${titles[page]}</h3><p>این بخش در این نسخه فقط خواندنی یا در انتظار تکمیل عملیات تخصصی است.</p></section>`)}catch(e){shell(`<section class="page-panel glass"><h3>${titles[page]}</h3>${msg(e.message,"bad")}</section>`)}}
+    async function init(){const {data,error}=await supabase.auth.getSession();if(error)setAuthMessage(error.message,"error");if(data.session?.user)showApp(data.session.user);else showAuth();supabase.auth.onAuthStateChange((_event,session)=>{if(session?.user&&currentUser?.id!==session.user.id)showApp(session.user);else if(!session)showAuth()})}
+    init();
   </script>
 </body>
 </html>
