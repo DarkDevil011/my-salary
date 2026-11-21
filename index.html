@@ -417,7 +417,7 @@
       currentUser=user;renderedUserId=user.id;
       authScreen.classList.add("hidden");appScreen.classList.remove("hidden");
       $("userEmail").textContent=user.email||"کاربر";
-      $("connectionStatus").textContent="متصل به Supabase";
+      if($("connectionStatus")) $("connectionStatus").textContent="متصل به Supabase";
       $("todayText").textContent=new Intl.DateTimeFormat("fa-IR",{dateStyle:"full",timeZone:"Asia/Tehran"}).format(new Date());
       if(changed||!$("pageContent").innerHTML.trim()||activePage!=="dashboard") {
         if(dashboardOpening)return dashboardOpening;
@@ -556,10 +556,29 @@
     async function attendanceCalendar(){const j=toJalaali(...today().split("-").map(Number));let yy=j.jy,mm=j.jm;async function draw(){shell(`<section class="page-panel glass"><h3>تقویم کارکرد</h3><p>روزهای ثبت‌شده، ناقص و بدون ثبت را در ماه انتخابی ببین.</p><div class="toolbar"><button id="calPrev" class="btn btn-outline btn-sm">ماه قبل</button><strong id="calLabel">${faNum(yy)}/${faNum(mm)}</strong><button id="calNext" class="btn btn-outline btn-sm">ماه بعد</button></div><div id="attendanceGrid" class="calendar-grid"></div><div class="inline-note">● ثبت کامل 　● ورود بدون خروج 　● بدون ثبت</div></section>`);const start=toGregorian(yy,mm,1),len=jalaaliMonthLength(yy,mm),end=toGregorian(mm===12?yy+1:yy,mm===12?1:mm+1,1),from=`${start.gy}-${pad2(start.gm)}-${pad2(start.gd)}`,to=`${end.gy}-${pad2(end.gm)}-${pad2(end.gd)}`;const {data,error}=await supabase.from("work_sessions").select("work_date,started_at,ended_at").eq("user_id",currentUser.id).gte("work_date",from).lt("work_date",to);if(error){$("attendanceGrid").innerHTML=msg(error.message,"bad");return}const map={};for(const r of data||[]){map[r.work_date]??={in:false,out:false};map[r.work_date].in ||= !!r.started_at;map[r.work_date].out ||= !!r.ended_at}const first=(new Date(Date.UTC(start.gy,start.gm-1,start.gd)).getUTCDay()+1)%7;let html=["ش","ی","د","س","چ","پ","ج"].map(x=>`<div class="cal-weekday">${x}</div>`).join("");for(let z=0;z<first;z++)html+="<div></div>";for(let d=1;d<=len;d++){const g=toGregorian(yy,mm,d),iso=`${g.gy}-${pad2(g.gm)}-${pad2(g.gd)}`,v=map[iso],cls=!v?"missing":v.in&&v.out?"complete":"partial";html+=`<div class="cal-day ${cls}" title="${!v?"بدون ثبت":v.in&&v.out?"ورود و خروج ثبت شده":"ثبت ناقص"}"><b>${faNum(d)}</b><small>${!v?"بدون ثبت":v.in&&v.out?"کامل":"ناقص"}</small></div>`}$("attendanceGrid").innerHTML=html;$("calPrev").onclick=()=>{mm--;if(mm<1){mm=12;yy--}draw()};$("calNext").onclick=()=>{mm++;if(mm>12){mm=1;yy++}draw()}}await draw()}
     async function openPage(page){if(!titles[page])return;activePage=page;navActive(page);$("pageTitle").textContent=titles[page];$("sidebar").classList.remove("open");try{if(page==="dashboard")return await dashboard();if(configs[page])return await openCrud(page);if(page==="transactions")return await openCrud("transactions");if(page==="payroll")return await payrollPage();if(page==="reports")return await reportsPage();if(page==="reconciliation")return await reconciliation();if(page==="history")return await simpleViewPage(titles[page],"v_audit_history",[["created_at","زمان",fmtDateTime],["action","عملیات"],["entity_type","نوع رکورد"],["entity_id","شناسه"],["details","جزئیات",v=>JSON.stringify(v)]],"رویدادهای قابل مشاهده در audit_logs.");if(page==="trace")return await simpleViewPage(titles[page],"v_financial_source_trace",[["transaction_date","تاریخ",fmtDateTime],["title","عنوان"],["amount","مبلغ",money],["source_type","منشأ"],["account_name","حساب"],["payroll_year","سال حقوق"],["payroll_month","ماه حقوق"]],"منشأ تراکنش‌ها و ارتباط آن‌ها با پرداخت‌های دیگر.");if(page==="archive")return await archivePage();if(page==="settings")return await settingsPage();if(page==="finance")return await simpleViewPage("نمای کلی امور مالی","v_finance_dashboard",[["available_money","پول در دسترس",money],["receivables","مطالبات",money],["debts","بدهی‌ها",money],["total_financial_assets","کل دارایی",money],["net_worth","دارایی خالص",money]]);if(page==="installments")return await simpleViewPage(titles[page],"v_finance_installment_balances",[["title","عنوان"],["creditor_name","طلبکار"],["total_amount","کل",money],["paid_amount","پرداخت‌شده",money],["remaining_amount","مانده",money],["next_due_date","سررسید",fmtDate],["status","وضعیت"]]);if(page==="receivables")return await openCrud("receivables");if(page==="accounts")return await openCrud("accounts");if(page==="goals")return await openCrud("goals");if(page==="calendar")return await attendanceCalendar();if(page==="leave")return await openCrud("leave");if(page==="work")return await openCrud("work");if(page==="sales")return await openCrud("sales");if(page==="claims")return await openCrud("claims");shell(`<section class="page-panel glass"><h3>${titles[page]}</h3><p>این بخش در این نسخه فقط خواندنی یا در انتظار تکمیل عملیات تخصصی است.</p></section>`)}catch(e){shell(`<section class="page-panel glass"><h3>${titles[page]}</h3>${msg(e.message,"bad")}</section>`)}}
     async function init(){
-      supabase.auth.onAuthStateChange((_event,session)=>{if(session?.user){if(currentUser?.id!==session.user.id||appScreen.classList.contains("hidden"))showApp(session.user)}else if(!session)showAuth()});
+      // Do not query Supabase from inside onAuthStateChange: the auth lock may still be held.
       const {data,error}=await supabase.auth.getSession();
-      if(error)setAuthMessage(error.message,"error");
-      if(data.session?.user)await showApp(data.session.user);else showAuth();
+      if(error) throw error;
+      let session=data?.session||null;
+      if(session?.refresh_token){
+        const refreshed=await supabase.auth.refreshSession({refresh_token:session.refresh_token});
+        if(refreshed.error || !refreshed.data?.session){
+          await supabase.auth.signOut();
+          showAuth();
+          setAuthMessage("نشست قبلی معتبر نبود؛ لطفاً دوباره وارد حساب شو.","error");
+          return;
+        }
+        session=refreshed.data.session;
+      }
+      supabase.auth.onAuthStateChange((_event,nextSession)=>{
+        // Defer UI/database work until Supabase finishes its internal auth notification.
+        queueMicrotask(()=>{
+          if(nextSession?.user){
+            if(currentUser?.id!==nextSession.user.id || appScreen.classList.contains("hidden")) showApp(nextSession.user).catch(e=>console.error("نمایش داشبورد:",e));
+          } else if(!nextSession) showAuth();
+        });
+      });
+      if(session?.user) await showApp(session.user); else showAuth();
     }
     init().catch(error=>{console.error("MY SALARY initialization:",error);setAuthMessage("راه‌اندازی سایت با خطا روبه‌رو شد: "+error.message,"error")});
   </script>
