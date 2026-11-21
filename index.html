@@ -1,1 +1,461 @@
 
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#100d1c" />
+  <title>MY SALARY | مدیریت مالی شخصی</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#0c0a13; --panel:rgba(30,25,45,.76);
+      --panel2:rgba(43,34,63,.62); --line:rgba(255,255,255,.09);
+      --purple:#a78bfa; --purple2:#7c3aed;
+      --text:#f6f2ff; --muted:#a9a1b8;
+      --green:#65d6a0; --red:#ff7d91;
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:
+      radial-gradient(ellipse at 15% 0%,rgba(124,58,237,.20),transparent 40%),
+      radial-gradient(ellipse at 90% 80%,rgba(91,55,160,.12),transparent 38%),
+      var(--bg);color:var(--text);font-family:"Vazirmatn",sans-serif;min-height:100vh}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .hidden{display:none!important}
+    .muted{color:var(--muted)}
+    .small{font-size:12px}
+    .glass{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:var(--radius);box-shadow:0 12px 45px #0002}
+    .auth-wrap{min-height:100vh;display:grid;place-items:center;padding:22px}
+    .auth-card{width:min(440px,100%);padding:30px}
+    .brand{text-align:center;margin-bottom:25px}
+    .brand-mark{width:62px;height:62px;margin:auto auto 13px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(135deg,#a78bfa,#6d28d9);font-size:27px;font-weight:800;box-shadow:0 10px 35px #7c3aed55}
+    .brand h1{font-size:25px;letter-spacing:2px;margin:0}
+    .brand p{font-size:13px;color:var(--muted);margin:7px 0}
+    .field{margin:14px 0}
+    .field label{display:block;font-size:13px;color:#d8d0e8;margin-bottom:7px}
+    .field input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:13px;background:#ffffff08;color:white;outline:none}
+    .field input:focus{border-color:var(--purple)}
+    .btn{border:0;border-radius:13px;padding:12px 17px;color:white;background:linear-gradient(135deg,#8b5cf6,#6d28d9);font-weight:700}
+    .btn:disabled{opacity:.55;cursor:wait}
+    .btn-outline{background:#ffffff09;border:1px solid var(--line);color:var(--text)}
+    .full{width:100%}
+    .auth-actions{display:flex;gap:10px;margin-top:18px}
+    .auth-actions button{flex:1}
+    .message{font-size:13px;line-height:1.9;margin-top:14px;color:var(--muted);min-height:22px}
+    .message.error{color:var(--red)} .message.success{color:var(--green)}
+    .app{display:flex;min-height:100vh}
+    .sidebar{width:265px;flex-shrink:0;padding:22px 15px;position:fixed;right:0;top:0;bottom:0;overflow:auto;border-left:1px solid var(--line);background:rgba(16,13,27,.88);backdrop-filter:blur(20px);z-index:5}
+    .side-brand{display:flex;align-items:center;gap:12px;padding:5px 8px 22px}
+    .side-brand .brand-mark{width:43px;height:43px;border-radius:14px;font-size:19px;margin:0}
+    .side-brand strong{letter-spacing:1.5px}
+    .side-brand small{display:block;color:var(--muted);font-size:11px}
+    .nav-label{font-size:11px;color:#837a98;padding:15px 12px 7px}
+    .nav-btn{width:100%;display:flex;align-items:center;gap:11px;text-align:right;padding:11px 13px;border:1px solid transparent;border-radius:12px;background:transparent;color:#c9c1d8;font-size:13px;margin:3px 0}
+    .nav-btn:hover,.nav-btn.active{background:linear-gradient(90deg,#8b5cf625,#8b5cf610);border-color:#a78bfa35;color:white}
+    .nav-icon{width:23px;text-align:center;font-size:17px}
+    .main{margin-right:265px;width:calc(100% - 265px);padding:25px 30px 50px;max-width:1600px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:26px}
+    .topbar h2{margin:0;font-size:22px}
+    .topbar p{margin:5px 0 0;color:var(--muted);font-size:12px}
+    .user-chip{display:flex;align-items:center;gap:10px;padding:9px 13px;border:1px solid var(--line);border-radius:14px;background:#ffffff08;font-size:12px;max-width:55%}
+    .avatar{width:34px;height:34px;border-radius:12px;background:#8b5cf633;color:#c4b5fd;display:grid;place-items:center;font-weight:800}
+    .mobile-menu{display:none}
+    .welcome{padding:24px 25px;margin-bottom:20px;background:linear-gradient(115deg,#6d28d944,#29203d99);position:relative;overflow:hidden}
+    .welcome:after{content:"✦";position:absolute;left:35px;top:12px;font-size:95px;color:#ffffff0c}
+    .welcome h3{margin:0 0 8px;font-size:19px}
+    .welcome p{margin:0;color:#c5bad8;font-size:13px}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
+    .stat{padding:19px}
+    .stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}
+    .stat-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#a78bfa20;font-size:17px}
+    .stat-value{font-size:23px;font-weight:800;margin-top:13px;direction:ltr;text-align:right}
+    .stat-foot{font-size:11px;color:var(--muted);margin-top:5px}
+    .content-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:15px}
+    .section-card{padding:20px;min-height:180px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}
+    .section-head h3{font-size:14px;margin:0}
+    .section-head span{font-size:11px;color:var(--muted)}
+    .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .quick{border:1px solid var(--line);background:#ffffff06;color:#eee8f8;border-radius:13px;padding:15px 8px;text-align:center;font-size:12px}
+    .quick b{display:block;font-size:20px;margin-bottom:5px}
+    .quick:hover{border-color:#a78bfa88;background:#8b5cf61a}
+    .activity{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:12px}
+    .activity:last-child{border:0}
+    .activity-dot{width:9px;height:9px;border-radius:50%;background:var(--purple);box-shadow:0 0 12px #a78bfa}
+    .page-panel{padding:24px;min-height:300px}
+    .page-panel h3{margin-top:0}
+    .page-panel p{color:var(--muted);font-size:13px;line-height:2}
+    .notice{border:1px solid #a78bfa30;background:#a78bfa0d;padding:13px 15px;border-radius:13px;color:#d9cdf5;font-size:12px;line-height:2}
+    .logout{width:100%;margin-top:20px}
+    .footer{text-align:center;color:#756d83;font-size:11px;margin-top:30px}
+    @media(max-width:1100px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:760px){
+      .sidebar{transform:translateX(105%);transition:.25s;width:270px;box-shadow:-20px 0 60px #0007}
+      .sidebar.open{transform:translateX(0)}
+      .main{margin:0;width:100%;padding:18px 14px 35px}
+      .mobile-menu{display:inline-grid;place-items:center;width:40px;height:40px;border:1px solid var(--line);border-radius:12px;background:#ffffff0a;color:white}
+      .topbar{align-items:center}
+      .topbar h2{font-size:18px}
+      .content-grid{grid-template-columns:1fr}
+      .grid{gap:10px}
+      .stat{padding:15px}
+      .stat-value{font-size:19px}
+      .quick-grid{grid-template-columns:repeat(2,1fr)}
+      .user-chip{max-width:48%;overflow:hidden}
+    }
+    @media(max-width:380px){.grid{grid-template-columns:1fr 1fr}.stat-value{font-size:17px}}
+  </style>
+</head>
+<body>
+
+  <section id="authScreen" class="auth-wrap">
+    <div class="auth-card glass">
+      <div class="brand">
+        <div class="brand-mark">M</div>
+        <h1>MY SALARY</h1>
+        <p>مدیریت هوشمند حقوق و امور مالی شخصی</p>
+      </div>
+      <div class="field">
+        <label for="email">ایمیل</label>
+        <input id="email" type="email" autocomplete="email" placeholder="name@example.com">
+      </div>
+      <div class="field">
+        <label for="password">رمز عبور</label>
+        <input id="password" type="password" autocomplete="current-password" placeholder="حداقل ۶ کاراکتر">
+      </div>
+      <button id="loginBtn" class="btn full">ورود به حساب</button>
+      <div class="auth-actions">
+        <button id="signupBtn" class="btn btn-outline">ساخت حساب</button>
+        <button id="resetBtn" class="btn btn-outline">فراموشی رمز</button>
+      </div>
+      <div id="authMessage" class="message" role="status"></div>
+      <div class="footer">PRIVATE FINANCIAL SPACE · نسخه اولیه</div>
+    </div>
+  </section>
+
+  <section id="appScreen" class="app hidden">
+    <aside id="sidebar" class="sidebar">
+      <div class="side-brand">
+        <div class="brand-mark">M</div>
+        <div><strong>MY SALARY</strong><small>Personal Finance System</small></div>
+      </div>
+
+      <div class="nav-label">نمای کلی</div>
+      <button class="nav-btn active" data-page="dashboard"><span class="nav-icon">⌂</span>داشبورد تحلیل</button>
+
+      <div class="nav-label">مدیریت کار و حقوق</div>
+      <button class="nav-btn" data-page="work"><span class="nav-icon">◷</span>ثبت ساعت کاری</button>
+      <button class="nav-btn" data-page="leave"><span class="nav-icon">☼</span>مرخصی‌ها</button>
+      <button class="nav-btn" data-page="sales"><span class="nav-icon">↗</span>فروش و پورسانت</button>
+      <button class="nav-btn" data-page="payroll"><span class="nav-icon">▤</span>حقوق و دریافتی</button>
+      <button class="nav-btn" data-page="claims"><span class="nav-icon">◈</span>مطالبات فروشگاه</button>
+
+      <div class="nav-label">امور مالی شخصی</div>
+      <button class="nav-btn" data-page="finance"><span class="nav-icon">◉</span>MY FINANCE</button>
+      <button class="nav-btn" data-page="accounts"><span class="nav-icon">▣</span>حساب‌ها و تراکنش‌ها</button>
+      <button class="nav-btn" data-page="installments"><span class="nav-icon">▦</span>اقساط و بدهی‌ها</button>
+      <button class="nav-btn" data-page="receivables"><span class="nav-icon">⇢</span>طلب از دیگران</button>
+
+      <div class="nav-label">گزارش و مدیریت</div>
+      <button class="nav-btn" data-page="reports"><span class="nav-icon">▥</span>گزارش‌ها و تحلیل</button>
+      <button class="nav-btn" data-page="goals"><span class="nav-icon">◎</span>اهداف و پیش‌بینی</button>
+      <button class="nav-btn" data-page="calendar"><span class="nav-icon">▦</span>تقویم و یادآورها</button>
+      <button class="nav-btn" data-page="reconciliation"><span class="nav-icon">⌁</span>مرکز مغایرت‌یابی</button>
+      <button class="nav-btn" data-page="history"><span class="nav-icon">↺</span>تاریخچه تغییرات</button>
+      <button class="nav-btn" data-page="trace"><span class="nav-icon">⌕</span>ردیابی منشأ اعداد</button>
+      <button class="nav-btn" data-page="archive"><span class="nav-icon">▤</span>بایگانی و پشتیبان‌گیری</button>
+      <button class="nav-btn" data-page="settings"><span class="nav-icon">⚙</span>تنظیمات مدیریتی</button>
+      <button id="logoutBtn" class="btn btn-outline logout">خروج از حساب</button>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:11px">
+          <button id="menuBtn" class="mobile-menu" aria-label="باز کردن منو">☰</button>
+          <div><h2 id="pageTitle">داشبورد تحلیل</h2><p id="todayText">فضای مالی شخصی شما</p></div>
+        </div>
+        <div class="user-chip"><div class="avatar">M</div><span id="userEmail">کاربر</span></div>
+      </header>
+
+      <div id="pageContent">
+        <section class="welcome glass">
+          <h3>خوش اومدی 👋</h3>
+          <p>اینجا می‌تونی حقوق، ساعت کاری و وضعیت مالی خودت رو یک‌جا مدیریت کنی.</p>
+        </section>
+
+        <section class="grid">
+          <div class="stat glass">
+            <div class="stat-top"><span>حقوق محاسبه‌شده</span><span class="stat-icon">💜</span></div>
+            <div class="stat-value" id="salaryValue">—</div>
+            <div class="stat-foot">آخرین دوره حقوقی</div>
+          </div>
+          <div class="stat glass">
+            <div class="stat-top"><span>پول در دسترس</span><span class="stat-icon">💳</span></div>
+            <div class="stat-value" id="moneyValue">—</div>
+            <div class="stat-foot">موجودی حساب‌ها</div>
+          </div>
+          <div class="stat glass">
+            <div class="stat-top"><span>دارایی خالص</span><span class="stat-icon">◈</span></div>
+            <div class="stat-value" id="assetsValue">—</div>
+            <div class="stat-foot">پس از درنظرگرفتن بدهی‌ها</div>
+          </div>
+          <div class="stat glass">
+            <div class="stat-top"><span>ساعت کاری این ماه</span><span class="stat-icon">◷</span></div>
+            <div class="stat-value" id="hoursValue">—</div>
+            <div class="stat-foot">بر اساس جلسات ثبت‌شده</div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="section-card glass">
+            <div class="section-head"><h3>دسترسی سریع</h3><span>میانبر بخش‌ها</span></div>
+            <div class="quick-grid">
+              <button class="quick" data-page="work"><b>◷</b>ثبت ساعت کاری</button>
+              <button class="quick" data-page="sales"><b>↗</b>ثبت فروش</button>
+              <button class="quick" data-page="payroll"><b>▤</b>فیش حقوقی</button>
+              <button class="quick" data-page="accounts"><b>💳</b>تراکنش مالی</button>
+              <button class="quick" data-page="claims"><b>◈</b>مطالبات فروشگاه</button>
+              <button class="quick" data-page="calendar"><b>▦</b>یادآورها</button>
+            </div>
+          </div>
+          <div class="section-card glass">
+            <div class="section-head"><h3>وضعیت سیستم</h3><span>اتصال زنده</span></div>
+            <div class="activity"><span class="activity-dot"></span><span id="connectionStatus">در حال بررسی اتصال...</span></div>
+            <div class="activity"><span class="activity-dot"></span><span>حفاظت داده‌ها با احراز هویت Supabase</span></div>
+            <div class="activity"><span class="activity-dot"></span><span>نمایش اطلاعات مخصوص حساب واردشده</span></div>
+          </div>
+        </section>
+        <div class="footer">MY SALARY · Your private financial workspace</div>
+      </div>
+    </main>
+  </section>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    // فقط آدرس پروژه و کلید عمومی Publishable را اینجا وارد کن.
+    const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+    const SUPABASE_PUBLISHABLE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+
+    const configured =
+      SUPABASE_URL.startsWith("https://") &&
+      !SUPABASE_URL.includes("YOUR_") &&
+      !SUPABASE_PUBLISHABLE_KEY.includes("YOUR_") &&
+      SUPABASE_PUBLISHABLE_KEY.length > 10;
+
+    const $ = (id) => document.getElementById(id);
+    const authScreen = $("authScreen");
+    const appScreen = $("appScreen");
+    const authMessage = $("authMessage");
+
+    let supabase = null;
+    let currentUser = null;
+
+    if (configured) {
+      supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+      $("connectionStatus").textContent = "اتصال اولیه آماده است";
+    } else {
+      $("connectionStatus").textContent = "کلیدهای اتصال هنوز تنظیم نشده‌اند";
+    }
+
+    function showMessage(message, type = "") {
+      authMessage.textContent = message;
+      authMessage.className = "message " + type;
+    }
+
+    function setLoading(button, loading, label) {
+      button.disabled = loading;
+      button.textContent = loading ? "لطفاً صبر کن..." : label;
+    }
+
+    function showApp(user) {
+      currentUser = user;
+      authScreen.classList.add("hidden");
+      appScreen.classList.remove("hidden");
+      $("userEmail").textContent = user.email || "کاربر";
+      $("connectionStatus").textContent = "متصل به Supabase";
+      $("todayText").textContent = new Intl.DateTimeFormat("fa-IR", {
+        dateStyle: "full", timeZone: "Asia/Tehran"
+      }).format(new Date());
+      loadDashboard();
+    }
+
+    function showAuth() {
+      currentUser = null;
+      appScreen.classList.add("hidden");
+      authScreen.classList.remove("hidden");
+    }
+
+    $("loginBtn").addEventListener("click", async () => {
+      if (!supabase) return showMessage("ابتدا آدرس و کلید عمومی Supabase را در کد تنظیم کن.", "error");
+      const email = $("email").value.trim();
+      const password = $("password").value;
+      if (!email || !password) return showMessage("ایمیل و رمز عبور را وارد کن.", "error");
+
+      setLoading($("loginBtn"), true, "ورود به حساب");
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      setLoading($("loginBtn"), false, "ورود به حساب");
+      if (error) showMessage(error.message, "error");
+    });
+
+    $("signupBtn").addEventListener("click", async () => {
+      if (!supabase) return showMessage("ابتدا تنظیمات Supabase را کامل کن.", "error");
+      const email = $("email").value.trim();
+      const password = $("password").value;
+      if (!email || password.length < 6)
+        return showMessage("ایمیل معتبر و رمز عبور حداقل ۶ کاراکتری وارد کن.", "error");
+
+      setLoading($("signupBtn"), true, "ساخت حساب");
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      setLoading($("signupBtn"), false, "ساخت حساب");
+
+      if (error) return showMessage(error.message, "error");
+      if (data.session) showMessage("حساب ساخته شد و وارد شدی.", "success");
+      else showMessage("حساب ساخته شد. اگر تأیید ایمیل فعال است، ایمیلت را بررسی کن.", "success");
+    });
+
+    $("resetBtn").addEventListener("click", async () => {
+      if (!supabase) return showMessage("ابتدا تنظیمات Supabase را کامل کن.", "error");
+      const email = $("email").value.trim();
+      if (!email) return showMessage("ابتدا ایمیلت را وارد کن.", "error");
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      showMessage(error ? error.message : "لینک بازیابی رمز برای ایمیلت ارسال شد.", error ? "error" : "success");
+    });
+
+    $("logoutBtn").addEventListener("click", async () => {
+      if (!supabase) return showAuth();
+      const { error } = await supabase.auth.signOut();
+      if (error) alert("خروج انجام نشد: " + error.message);
+      else showAuth();
+    });
+
+    async function readFirst(query) {
+      const { data, error } = await query;
+      if (error) {
+        console.warn("Dashboard data:", error.message);
+        return null;
+      }
+      return data && data.length ? data[0] : null;
+    }
+
+    function money(value) {
+      if (value === null || value === undefined || value === "") return "—";
+      return new Intl.NumberFormat("fa-IR", { maximumFractionDigits: 0 }).format(Number(value)) + " تومان";
+    }
+
+    async function loadDashboard() {
+      if (!supabase || !currentUser) return;
+
+      const [finance, payroll, work] = await Promise.all([
+        readFirst(supabase.from("v_finance_dashboard").select("*").eq("user_id", currentUser.id).limit(1)),
+        readFirst(supabase.from("v_payroll_dashboard_summary").select("*").eq("user_id", currentUser.id).limit(1)),
+        readFirst(supabase.from("v_daily_work_summary").select("actual_work_minutes").eq("user_id", currentUser.id).gte("day", new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0,10)))
+      ]);
+
+      if (finance) {
+        $("moneyValue").textContent = money(finance.available_money);
+        $("assetsValue").textContent = money(finance.net_worth);
+      }
+
+      if (payroll) {
+        const total = payroll.calculated_total ?? payroll.total_payroll ?? payroll.total_amount;
+        if (total !== undefined) $("salaryValue").textContent = money(total);
+      }
+
+      if (work && Array.isArray(work)) {
+        const minutes = work.reduce((sum, row) => sum + Number(row.actual_work_minutes || 0), 0);
+        $("hoursValue").textContent = new Intl.NumberFormat("fa-IR").format(Math.floor(minutes / 60)) + " ساعت";
+      } else {
+        $("hoursValue").textContent = "—";
+      }
+    }
+
+    const pageNames = {
+      dashboard:"داشبورد تحلیل", work:"ثبت ساعت کاری", leave:"مرخصی‌ها",
+      sales:"فروش و پورسانت", payroll:"حقوق و دریافتی",
+      claims:"مطالبات فروشگاه", finance:"MY FINANCE",
+      accounts:"حساب‌ها و تراکنش‌ها", installments:"اقساط و بدهی‌ها",
+      receivables:"طلب از دیگران", reports:"گزارش‌ها و تحلیل",
+      goals:"اهداف و پیش‌بینی", calendar:"تقویم و یادآورها",
+      reconciliation:"مرکز مغایرت‌یابی", history:"تاریخچه تغییرات",
+      trace:"ردیابی منشأ اعداد", archive:"بایگانی و پشتیبان‌گیری",
+      settings:"تنظیمات مدیریتی"
+    };
+
+    function openPage(page) {
+      if (!pageNames[page]) return;
+      document.querySelectorAll(".nav-btn").forEach(btn =>
+        btn.classList.toggle("active", btn.dataset.page === page)
+      );
+      $("pageTitle").textContent = pageNames[page];
+      $("sidebar").classList.remove("open");
+
+      if (page === "dashboard") {
+        $("pageContent").innerHTML = `
+          <section class="welcome glass">
+            <h3>خوش اومدی 👋</h3>
+            <p>خلاصه وضعیت مالی و کاری تو در یک نگاه.</p>
+          </section>
+          <div class="notice">برای مشاهده آمار به‌روز، اطلاعات داشبورد از Supabase خوانده می‌شود.</div>`;
+        loadDashboard();
+        return;
+      }
+
+      const descriptions = {
+        work:"ثبت ورود و خروج‌های متعدد، وقفه‌ها و محاسبه دقیق دقیقه‌های کارکرد.",
+        leave:"مدیریت مرخصی کامل و ساعتی و مشاهده سوابق مرخصی.",
+        sales:"ثبت فروش سایت و حضوری و محاسبه پورسانت بر اساس قوانین فعال.",
+        payroll:"مشاهده فیش حقوقی، پرداخت‌ها، مانده و سوابق دوره‌های حقوقی.",
+        claims:"ثبت هزینه‌هایی که از پول شخصی برای فروشگاه پرداخت کرده‌ای.",
+        finance:"نمای کلی پول در دسترس، دارایی خالص، بدهی‌ها و مطالبات.",
+        accounts:"مدیریت حساب‌ها و ثبت درآمد، هزینه و انتقال بین حساب‌ها.",
+        installments:"مدیریت اقساط، پرداخت جزئی و مانده بدهی‌ها.",
+        receivables:"ثبت طلب از دیگران و پیگیری تسویه‌ها.",
+        reports:"گزارش‌های ماهانه و سالانه حقوق، فروش و کارکرد.",
+        goals:"تعریف هدف فروش و ساعت کاری و بررسی میزان تحقق.",
+        calendar:"مدیریت یادآورها و سررسیدهای مالی و کاری.",
+        reconciliation:"بررسی مغایرت بین پرداخت‌ها، فیش‌ها و تراکنش‌ها.",
+        history:"مشاهده تاریخچه رویدادهای ثبت‌شده در سیستم.",
+        trace:"ردیابی منشأ تراکنش‌ها، فیش‌ها و اصلاحیه‌ها.",
+        archive:"ساخت و مشاهده آرشیو اطلاعات شخصی.",
+        settings:"مدیریت تنظیمات حقوق، پورسانت و مشخصات حساب."
+      };
+
+      $("pageContent").innerHTML = `
+        <section class="page-panel glass">
+          <h3>${pageNames[page]}</h3>
+          <p>${descriptions[page] || "مدیریت اطلاعات این بخش."}</p>
+          <div class="notice">
+            پوسته رابط کاربری این بخش ساخته شده است. فرم‌ها، جدول‌ها و عملیات متصل به دیتابیس در ادامه مرحله ۲۴ تکمیل می‌شوند.
+          </div>
+        </section>`;
+    }
+
+    document.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-page]");
+      if (target) openPage(target.dataset.page);
+    });
+
+    $("menuBtn").addEventListener("click", () => $("sidebar").classList.toggle("open"));
+
+    if (supabase) {
+      supabase.auth.getSession().then(({ data, error }) => {
+        if (error) showMessage(error.message, "error");
+        if (data.session?.user) showApp(data.session.user);
+        else showAuth();
+      });
+
+      supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) showApp(session.user);
+        else showAuth();
+      });
+    } else {
+      showAuth();
+    }
+  </script>
+</body>
+</html>
